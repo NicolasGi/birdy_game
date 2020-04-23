@@ -1,4 +1,5 @@
 import ground from "./ground";
+import scores from "./scores";
 
 const birdie = {
     game:null,
@@ -34,6 +35,7 @@ const birdie = {
             this.y += this.fallSpeed
             this.checkCollisionWithGround()
             this.checkCollisionWithTubes()
+            this.checkWinPoint()
         }
         this.render()
     },
@@ -87,8 +89,13 @@ const birdie = {
                 }
             }
         })
+    },
+    checkWinPoint(){
+        this.game.tubesPairs.forEach((tubePair)=>{
+            if(this.x + this.width/2 === tubePair.x + tubePair.width){
+                    scores.count++
+                }
+        })
     }
-
-
 }
 export default birdie

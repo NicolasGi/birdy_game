@@ -3,6 +3,7 @@ import ground from "./ground";
 import birdie from "./birdie";
 import controller from "./controller";
 import TubesPair from "./TubesPair";
+import scores from "./scores";
 
 const game = {
     canvas: document.getElementById('game'),
@@ -21,10 +22,11 @@ const game = {
         this.ctx = this.canvas.getContext('2d');
         this.sprite.src = this.spriteSheetSrc;
         this.sprite.addEventListener('load', () => {
-            controller.init(this)
+            controller.init(this);
             background.init(this);
             ground.init(this);
             birdie.init(this);
+            scores.init(this);
             this.animate()
         })
 
@@ -51,7 +53,8 @@ const game = {
             tubesPair.update()
         })
         ground.update();
-        birdie.update()
+        birdie.update();
+        scores.update();
     },
     renderSpriteFrame(coordinates) {
         this.ctx.drawImage(
