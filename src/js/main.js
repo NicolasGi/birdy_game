@@ -1,0 +1,74 @@
+import background from "./background";
+import ground from "./ground";
+import birdie from "./birdie";
+import controller from "./controller";
+import TubesPair from "./TubesPair";
+
+const game = {
+    canvas: document.getElementById('game'),
+    ctx: null,
+    spriteSheetSrc: '../resources/sprite.png',
+    sprite: new Image(),
+    gravity: 0.9,
+    hasStarted: false,
+    tubesPairs: [],
+    frameCounter: 0,
+    frameInterval: 80,
+    maxTubesPairs: 3,
+    requestId : 0,
+
+    init() {
+        this.ctx = this.canvas.getContext('2d');
+        this.sprite.src = this.spriteSheetSrc;
+        this.sprite.addEventListener('load', () => {
+            controller.init(this)
+            background.init(this);
+            ground.init(this);
+            birdie.init(this);
+            this.animate()
+        })
+
+
+    },
+
+    animate() {
+        this.requestId = window.requestAnimationFrame(() => {
+            this.animate()
+        });
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+        background.update();
+        if (this.hasStarted) {
+            if (this.frameCounter++ >= this.frameInterval) {
+                if (this.tubesPairs.length >= this.maxTubesPairs) {
+                    this.tubesPairs.splice(0, 1)
+                }
+                this.tubesPairs.push(new TubesPair(this))
+
+                this.frameCounter = 0
+            }
+        }
+        this.tubesPairs.forEach((tubesPair) => {
+            tubesPair.update()
+        })
+        ground.update();
+        birdie.update()
+    },
+    renderSpriteFrame(coordinates) {
+        this.ctx.drawImage(
+            this.sprite,
+            coordinates.sx,
+            coordinates.sy,
+            coordinates.sw,
+            coordinates.sh,
+            coordinates.dx,
+            coordinates.dy,
+            coordinates.dw,
+            coordinates.dh,
+        );
+    },
+    cancelAnimation() {
+        window.cancelAnimationFrame(this.requestId)
+    },
+};
+
+game.init()

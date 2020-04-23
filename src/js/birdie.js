@@ -1,0 +1,94 @@
+import ground from "./ground";
+
+const birdie = {
+    game:null,
+    maxAnimationStep: 0,
+    animationStep:0,
+    counterInterval:0,
+    maxInterval:5,
+    frames: [
+        {
+            sx: 230,
+            sy: 762,
+        },
+        {
+            sx: 230,
+            sy: 814,
+        },
+        {
+            sx: 230,
+            sy: 866,
+        }
+    ],
+    width:34,
+    height:24,
+    x:0,
+    y:0,
+    fallSpeed:0,
+    maxFallSpeed:7,
+
+    update(){
+        if(this.game.hasStarted){
+            if(this.fallSpeed < this.maxFallSpeed)
+                this.fallSpeed += this.game.gravity
+            this.y += this.fallSpeed
+            this.checkCollisionWithGround()
+            this.checkCollisionWithTubes()
+        }
+        this.render()
+    },
+
+    init(game){
+        this.game = game
+        this.x = this.width / 2 + 3
+        this.y = (this.game.canvas.height - ground.frame.sh) /2
+        this.maxAnimationStep = this.frames.length - 1
+    },
+    goUp(){
+        this.fallSpeed = -this.maxFallSpeed
+    },
+    render(){
+        this.counterInterval++
+        if(!(this.counterInterval%this.maxInterval)){
+            this.counterInterval = 0
+            this.animationStep = this.animationStep < this.maxAnimationStep ? this.animationStep + 1 : 0
+
+        }
+        this.game.ctx.save()
+        this.game.ctx.translate(this.x, this.y)
+        this.game.ctx.rotate(this.fallSpeed/this.maxFallSpeed)
+        this.game.renderSpriteFrame(
+            {
+                sx:this.frames[this.animationStep].sx,
+                sy:this.frames[this.animationStep].sy,
+                sw:this.width,
+                sh: this.height,
+                dx:-this.width/2 ,
+                dy:-this.height/2,
+                dw:this.width,
+                dh:this.height
+
+            }
+        )
+
+        this.game.ctx.restore()
+    },
+    checkCollisionWithGround(){
+        if(this.y > ground.frame.dy-this.height/2){
+            this.y = ground.frame.dy -this.height/2
+            this.goUp()
+        }
+    },
+    checkCollisionWithTubes(){
+        this.game.tubesPairs.forEach((tubePair)=>{
+            if(this.x + this.width/2 > tubePair.x && this.x - this.width/2 < tubePair.x + tubePair.width){
+                if((this.y - this.height/2) < tubePair.yTop+tubePair.height || (this.y + this.height/2) > tubePair.yBottom ){
+                    this.game.cancelAnimation()
+                }
+            }
+        })
+    }
+
+
+}
+export default birdie
