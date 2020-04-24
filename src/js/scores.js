@@ -21,11 +21,13 @@ const scores = {
 
 
     update(){
-        if(this.count === this.maxCount){
-            this.count = 0
-            this.decimal++
+        if(this.game.hasStarted) {
+            if (this.count === this.maxCount) {
+                this.count = 0
+                this.decimal++
+            }
+            this.render()
         }
-        this.render()
     },
     init(game){
         this.game = game

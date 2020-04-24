@@ -69,8 +69,29 @@ const game = {
             coordinates.dh,
         );
     },
+    gameOver(){
+        this.hasStarted = false
+        this.ctx.save()
+        this.ctx.translate(0,0)
+        this.renderSpriteFrame(
+            {
+                sx:790,
+                sy:116,
+                sw:190,
+                sh:46,
+                dx:this.canvas.width/2 - 188/2,
+                dy:this.canvas.height/5,
+                dw:190,
+                dh:46
+            }
+        )
+
+        this.ctx.restore()
+    },
     cancelAnimation() {
+        this.gameOver()
         window.cancelAnimationFrame(this.requestId)
+
     },
 };
 
